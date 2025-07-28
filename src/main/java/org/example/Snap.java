@@ -14,15 +14,25 @@ package org.example;
 //
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Snap extends CardGame{
     // loop round and get user 'enter' input
     // on enter, the user takes a turn, and a card is dealt
     // check if previous card and current card are the same symbol - if so, players wins
+    private List<Player> players = new ArrayList<>();
+    private int currentPlayerIndex = 0;
 
     public Snap () {
         super();
+    }
+
+    // setup players
+    public void setupPlayers(String... playerNames){
+        for (String name : playerNames){
+            players.add(new Player(name));
+        }
     }
 
     public CardGame setUpGame(){
@@ -32,21 +42,22 @@ public class Snap extends CardGame{
         return snap;
     }
 
-    public String getUserInput(String player, Scanner s){
+    public String getUserInput(Player player, Scanner s){
         //Scanner s = new Scanner(System.in);
-        System.out.println(player + " your turn - Press ENTER to deal card, any other key to exit ");
+        System.out.println(player.getName() + " your turn - Press ENTER to deal card, any other key to exit ");
         String nextInput = s.nextLine();
         //s.close();
         return nextInput;
     }
 
-    public boolean compareCards(Card prevCard, Card currCard){
+    public boolean compareCards(Card prevCard, Card currCard, Player currentPlayer){
         if (prevCard != null) {
             System.out.println("Card dealt is: " + currCard.symbol + " previous card is: " + prevCard.symbol);
             // check the dealt with previous card - if symbol is the same, then won
 
             if (prevCard.symbol.equals(currCard.symbol)) {
-                System.out.println("Snap! you have won!" + currCard.symbol);
+                System.out.println("Snap! "+ currentPlayer.getName()+" have wins with card symbol : " + currCard.symbol +"!");
+                currentPlayer.incrementScore();
                 //set flag to exit loop
                 return true;
             }
@@ -69,28 +80,56 @@ public class Snap extends CardGame{
 
         Card previousCard = null;
 
-        while (playSnapFlag && !snap.deckOfCards.isEmpty()) {
+        if (players.size()!=0) {
+            while (playSnapFlag && !snap.deckOfCards.isEmpty()) {
 
-            String nextInput = getUserInput("Joe", scanner);
+                Player currentPlayer = players.get(currentPlayerIndex);
 
-            if (!nextInput.isEmpty()) {
-                System.out.println("Thanks for playing Snap!");
-                break;
+                String nextInput = getUserInput(currentPlayer, scanner);
+
+                if (!nextInput.isEmpty()) {
+                    System.out.println("Thanks for playing Snap - no winners!");
+                    break;
+                }
+
+                // deal the card
+                Card dealtCard = snap.dealCard();
+                // compare cards - if same - player wins - exit loop
+                if (compareCards(previousCard, dealtCard, currentPlayer)) {
+                    System.out.println("Score:");
+                    for (Player player : players) {
+                        System.out.println(player.getName() + ": " + player.getScore());
+                    }
+                    System.out.println("Play again? y/n");
+                    String plagAgainReply = scanner.nextLine();
+                    if (!plagAgainReply.equalsIgnoreCase("y")) {
+                        // exiting game
+                        playSnapFlag = false;
+                        break;
+                    }
+                    snap = setUpGame(); // reset the deck
+                    previousCard = null;
+                    continue;
+                }
+
+                // set the previous card to the current dealt card
+                if (checkForEmptyDeck(snap)) {
+                    System.out.println("No more cards left. Game over!");
+                }
+                ;
+
+                previousCard = dealtCard;
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
             }
-
-            // deal the card
-            Card dealtCard = snap.dealCard();
-            // compare cards - if same - player wins - exit loop
-            if (compareCards(previousCard, dealtCard)) break;
-
-            // set the previous card to the current dealt card
-
-            if(checkForEmptyDeck(snap)) {
-                System.out.println("No more cards left. Game over!");
-            };
-
-            previousCard = dealtCard;
+            System.out.println("\nGame Over - final score :");
+            for (Player player : players) {
+                System.out.println(player.getName() + ": " + player.getScore());
+            }
+        }
+        else {
+            System.out.println("Cannot play - No players set!");
         }
         scanner.close(); // closing the Scanner
     }
+
 }

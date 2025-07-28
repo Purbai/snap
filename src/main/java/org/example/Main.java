@@ -30,10 +30,8 @@ public class Main {
 //        System.out.println(" card dealt is: "+ snap.dealCard());
 
         Snap game = new Snap();
+        game.setupPlayers("Joe", "Mary");
         game.startGame();
-
-
-
     }
 }
 
