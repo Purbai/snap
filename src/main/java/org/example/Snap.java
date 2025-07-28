@@ -16,6 +16,7 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class Snap extends CardGame{
     // loop round and get user 'enter' input
@@ -50,16 +51,41 @@ public class Snap extends CardGame{
         return nextInput;
     }
 
-    public boolean compareCards(Card prevCard, Card currCard, Player currentPlayer){
+    public boolean compareCards(Card prevCard, Card currCard, Player currentPlayer, Scanner s){
         if (prevCard != null) {
             System.out.println("Card dealt is: " + currCard.symbol + " previous card is: " + prevCard.symbol);
             // check the dealt with previous card - if symbol is the same, then won
 
             if (prevCard.symbol.equals(currCard.symbol)) {
-                System.out.println("Snap! "+ currentPlayer.getName()+" have wins with card symbol : " + currCard.symbol +"!");
-                currentPlayer.incrementScore();
-                //set flag to exit loop
-                return true;
+                // add timer for user to enter "snap" within 2 secs else they lose
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                System.out.println("You must enter snap to win the game!");
+
+                //String nextInput = s.nextLine();
+                Future<String> nextInput = executor.submit(() -> s.nextLine());
+
+                try {
+                    // Wait for input with a timeout of 10 seconds
+                    String input = nextInput.get(10, TimeUnit.SECONDS);
+                    if (!input.equalsIgnoreCase("snap")) {
+                        // exiting game
+                        return false;
+                    }
+
+                    System.out.println("Snap! "+ currentPlayer.getName()+" have wins with card symbol : " + currCard.symbol +"!");
+                    currentPlayer.incrementScore();
+                    //set flag to exit loop
+                    return true;
+                } catch (TimeoutException e) {
+                    System.out.println("Time is up! No input received.");
+                    nextInput.cancel(true);
+                    return false;
+                } catch (Exception e) {
+                    System.out.println("An error occurred: " + e.getMessage());
+                    return false;
+                } finally {
+                    executor.shutdown();
+                }
             }
         }
         else {
@@ -94,8 +120,9 @@ public class Snap extends CardGame{
 
                 // deal the card
                 Card dealtCard = snap.dealCard();
-                // compare cards - if same - player wins - exit loop
-                if (compareCards(previousCard, dealtCard, currentPlayer)) {
+                // compare cards - if same - player wins - check if want to play again
+                if (compareCards(previousCard, dealtCard, currentPlayer, scanner)) {
+
                     System.out.println("Score:");
                     for (Player player : players) {
                         System.out.println(player.getName() + ": " + player.getScore());
