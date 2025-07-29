@@ -18,8 +18,11 @@ public class Main {
 //            System.out.println(card);
 //        }
 
-        Snap game = new Snap();
-        game.setupPlayers("Joe", "Mary","Bob");
+//        Snap game = new Snap();
+//        game.setupPlayers("Joe", "Mary","Bob");
+//        game.startGame();
+        Hangman game = new Hangman();
+        game.setupPlayers("Mary");
         game.startGame();
     }
 }

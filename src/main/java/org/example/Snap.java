@@ -9,7 +9,6 @@ public class Snap extends CardGame implements PlayGame {
     private final InputProvider inputProvider;
     private List<Player> players = new ArrayList<>();
     private int currentPlayerIndex = 0;
-    //private Scanner scanner = new Scanner(System.in);
 
     public Snap(InputProvider inputProvider) {
         super("Snap");
@@ -21,7 +20,6 @@ public class Snap extends CardGame implements PlayGame {
             return scanner.nextLine();
         });
     }
-
 
     @Override
     public void buildDeck() {
@@ -89,17 +87,12 @@ public class Snap extends CardGame implements PlayGame {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 //Future<String> future = executor.submit(() -> scanner.nextLine());
                 Future<String> future = executor.submit(() -> inputProvider.getInput());
-
                 try {
                     String response = future.get(10, TimeUnit.SECONDS);
                     if (response.equalsIgnoreCase("snap")) {
                         System.out.println(player.getName() + " wins the round!");
                         player.incrementScore();
-                        //System.out.println("Play Again? y/n");
-                        //String playAgain = scanner.nextLine();
-                        //String playAgain = inputProvider.getInput();
-                        playing = playGameAgain();
-                        if (playing) {
+                        if (playGameAgain()) {
                             resetGame();
                         }
                         else {
@@ -124,8 +117,7 @@ public class Snap extends CardGame implements PlayGame {
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
             if (deckOfCards.isEmpty()) {
                 System.out.println("No cards left!");
-                playing = playGameAgain();
-                if (playing) {
+                if (playGameAgain()) {
                     resetGame();
                 } else {
                     break;
@@ -133,7 +125,7 @@ public class Snap extends CardGame implements PlayGame {
             }
         }
 
-        // Show scores
+        // Show final scores
         System.out.println("\nFinal scores:");
         for (Player p : players) {
             System.out.println(p.getName() + ": " + p.getScore());
