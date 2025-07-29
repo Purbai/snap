@@ -1,36 +1,25 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
-        List<Card> deckOfCards = new ArrayList<>();
 
-//        CardGame snap = new CardGame("Snap",deckOfCards);
-//        snap.buildDeck();
-//        System.out.println("\n Origin deck \n");
-//        snap.getDeck();
-//
-//        snap.sortDeckInNumberOrder();
+//        Snap gameSnap = new Snap();
+//        gameSnap.buildDeck();
+//        gameSnap.sortDeckInNumberOrder();
 //        System.out.println("\n Sorted Deck by Number \n");
-//        snap.getDeck();
-//
-//        snap.sortDeckIntoSuits();
-//        System.out.println("\n Sorted Deck by Suit \n");
-//        snap.getDeck();
-//
-//        snap.shuffleDeck();
-//        System.out.println("\n after deck shuffle \n");
-//        snap.getDeck();
-//
-//        System.out.println(" card dealt is: "+ snap.dealCard());
-//        System.out.println(" card dealt is: "+ snap.dealCard());
+//        for (Card card: gameSnap.getDeck())
+//        {
+//            System.out.println(card);
+//        }
+//        gameSnap.sortDeckIntoSuits();
+//        System.out.println("\n Sorted Deck by suit \n");
+//        for (Card card: gameSnap.getDeck())
+//        {
+//            System.out.println(card);
+//        }
 
         Snap game = new Snap();
-        game.setupPlayers("Joe", "Mary");
+        game.setupPlayers("Joe", "Mary","Bob");
         game.startGame();
     }
 }

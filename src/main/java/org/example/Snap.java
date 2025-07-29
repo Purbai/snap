@@ -1,162 +1,142 @@
 package org.example;
 
-//        ### Stage 3
-//
-//Create class for Snap that extends CardGame.
-//
-//        This class should use the methods defined
-//        above, as well as some new ones, to enable the user to play the game snap according to the
-//following rules:
-//
-//        - By pressing enter in the command line, the user takes their turn.
-//- Each turn, a new card is dealt from the deck.
-//        - The game continues until two cards in a row have the same symbol, at which point the “player” wins and the game ends.
-//
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
-public class Snap extends CardGame{
-    // loop round and get user 'enter' input
-    // on enter, the user takes a turn, and a card is dealt
-    // check if previous card and current card are the same symbol - if so, players wins
+public class Snap extends CardGame implements PlayGame {
+    private final InputProvider inputProvider;
     private List<Player> players = new ArrayList<>();
     private int currentPlayerIndex = 0;
+    //private Scanner scanner = new Scanner(System.in);
 
-    public Snap () {
-        super();
+    public Snap(InputProvider inputProvider) {
+        super("Snap");
+        this.inputProvider = inputProvider;
+    }
+    public Snap() {
+        this(() -> {
+            Scanner scanner = new Scanner(System.in);
+            return scanner.nextLine();
+        });
     }
 
-    // setup players
-    public void setupPlayers(String... playerNames){
-        for (String name : playerNames){
+
+    @Override
+    public void buildDeck() {
+        for (Suit suit : Suit.values()) {
+            for (Symbol symbol : Symbol.values()) {
+                int value = Value.valueOf(symbol.name()).getValue();
+                deckOfCards.add(new Card(suit.getSuitName(), symbol.getSymbolName(), value));
+            }
+        }
+    }
+
+    @Override
+    public void setupPlayers(String... names) {
+        for (String name : names) {
             players.add(new Player(name));
         }
     }
 
-    public CardGame setUpGame(){
-        CardGame snap = new CardGame("Snap", new ArrayList<>());
-        snap.buildDeck();
-        snap.shuffleDeck();
-        return snap;
+    public  boolean playGameAgain() {
+        System.out.println("Play Again? y/n");
+        //String playAgain = scanner.nextLine();
+        String playAgain = inputProvider.getInput();
+        return (playAgain.equalsIgnoreCase("y"));
     }
 
-    public String getUserInput(Player player, Scanner s){
-        //Scanner s = new Scanner(System.in);
-        System.out.println(player.getName() + " your turn - Press ENTER to deal card, any other key to exit ");
-        String nextInput = s.nextLine();
-        //s.close();
-        return nextInput;
+    public List<Player> getPlayers() {
+        return players;
     }
 
-    public boolean compareCards(Card prevCard, Card currCard, Player currentPlayer, Scanner s){
-        if (prevCard != null) {
-            System.out.println("Card dealt is: " + currCard.symbol + " previous card is: " + prevCard.symbol);
-            // check the dealt with previous card - if symbol is the same, then won
+    @Override
+    public void resetGame() {
+        deckOfCards.clear();
+        buildDeck();
+        shuffleDeck();
+        //currentPlayerIndex = 0;
+    }
 
-            if (prevCard.symbol.equals(currCard.symbol)) {
-                // add timer for user to enter "snap" within 2 secs else they lose
+    @Override
+    public void startGame() {
+        if (players.isEmpty()) {
+            System.out.println("No players! Cannot start game.");
+            return;
+        }
+        resetGame();
+
+        Card previousCard = null;
+        boolean playing = true;
+
+        while (playing && !deckOfCards.isEmpty()) {
+            Player player = players.get(currentPlayerIndex);
+            System.out.println("\n" + player.getName() + ", press ENTER to deal card, or any other key to exit ");
+            //String input = scanner.nextLine();
+            String input = inputProvider.getInput();
+
+            if (!input.isEmpty()) {
+                System.out.println("Thanks for playing!");
+                break;
+            }
+
+            Card dealtCard = dealCard();
+            System.out.println("Card dealt: " + dealtCard);
+
+            if (previousCard != null && previousCard.matchesSymbol((dealtCard))) {
+                System.out.println("SNAP! Type 'snap' in 10 seconds to win!");
                 ExecutorService executor = Executors.newSingleThreadExecutor();
-                System.out.println("You must enter snap to win the game!");
-
-                //String nextInput = s.nextLine();
-                Future<String> nextInput = executor.submit(() -> s.nextLine());
+                //Future<String> future = executor.submit(() -> scanner.nextLine());
+                Future<String> future = executor.submit(() -> inputProvider.getInput());
 
                 try {
-                    // Wait for input with a timeout of 10 seconds
-                    String input = nextInput.get(10, TimeUnit.SECONDS);
-                    if (!input.equalsIgnoreCase("snap")) {
-                        // exiting game
-                        return false;
+                    String response = future.get(10, TimeUnit.SECONDS);
+                    if (response.equalsIgnoreCase("snap")) {
+                        System.out.println(player.getName() + " wins the round!");
+                        player.incrementScore();
+                        //System.out.println("Play Again? y/n");
+                        //String playAgain = scanner.nextLine();
+                        //String playAgain = inputProvider.getInput();
+                        playing = playGameAgain();
+                        if (playing) {
+                            resetGame();
+                        }
+                        else {
+                            break;
+                        }
+                    } else {
+                        System.out.println("Too slow or wrong input.");
                     }
-
-                    System.out.println("Snap! "+ currentPlayer.getName()+" have wins with card symbol : " + currCard.symbol +"!");
-                    currentPlayer.incrementScore();
-                    //set flag to exit loop
-                    return true;
                 } catch (TimeoutException e) {
-                    System.out.println("Time is up! No input received.");
-                    nextInput.cancel(true);
-                    return false;
-                } catch (Exception e) {
+                    System.out.println("Time's up! No snap entered.");
+                    future.cancel(true);
+                } catch (InterruptedException | ExecutionException e) {
                     System.out.println("An error occurred: " + e.getMessage());
-                    return false;
+                } catch (Exception e) {
+                    System.out.println("No input - timeout.");
                 } finally {
                     executor.shutdown();
                 }
             }
-        }
-        else {
-            System.out.println("Card dealt : "+currCard.symbol + " | no previous card");
-        }
-        return false;
-    }
 
-    public boolean checkForEmptyDeck(CardGame snap){
-        return snap.deckOfCards.isEmpty();
-    }
-
-    public void startGame() {
-        Scanner scanner = new Scanner(System.in);
-        boolean playSnapFlag = true;
-
-        CardGame snap = setUpGame();
-
-        Card previousCard = null;
-
-        if (players.size()!=0) {
-            while (playSnapFlag && !snap.deckOfCards.isEmpty()) {
-
-                Player currentPlayer = players.get(currentPlayerIndex);
-
-                String nextInput = getUserInput(currentPlayer, scanner);
-
-                if (!nextInput.isEmpty()) {
-                    System.out.println("Thanks for playing Snap - no winners!");
+            previousCard = dealtCard;
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+            if (deckOfCards.isEmpty()) {
+                System.out.println("No cards left!");
+                playing = playGameAgain();
+                if (playing) {
+                    resetGame();
+                } else {
                     break;
                 }
-
-                // deal the card
-                Card dealtCard = snap.dealCard();
-                // compare cards - if same - player wins - check if want to play again
-                if (compareCards(previousCard, dealtCard, currentPlayer, scanner)) {
-
-                    System.out.println("Score:");
-                    for (Player player : players) {
-                        System.out.println(player.getName() + ": " + player.getScore());
-                    }
-                    System.out.println("Play again? y/n");
-                    String plagAgainReply = scanner.nextLine();
-                    if (!plagAgainReply.equalsIgnoreCase("y")) {
-                        // exiting game
-                        playSnapFlag = false;
-                        break;
-                    }
-                    snap = setUpGame(); // reset the deck
-                    previousCard = null;
-                    continue;
-                }
-
-                // set the previous card to the current dealt card
-                if (checkForEmptyDeck(snap)) {
-                    System.out.println("No more cards left. Game over!");
-                }
-                ;
-
-                previousCard = dealtCard;
-                currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-            }
-            System.out.println("\nGame Over - final score :");
-            for (Player player : players) {
-                System.out.println(player.getName() + ": " + player.getScore());
             }
         }
-        else {
-            System.out.println("Cannot play - No players set!");
+
+        // Show scores
+        System.out.println("\nFinal scores:");
+        for (Player p : players) {
+            System.out.println(p.getName() + ": " + p.getScore());
         }
-        scanner.close(); // closing the Scanner
     }
-
 }
