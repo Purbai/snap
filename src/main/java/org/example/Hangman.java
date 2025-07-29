@@ -41,6 +41,75 @@ public class Hangman implements PlayGame {
         return true;
     }
 
+    private void drawHangman(int remainingAttempts, int maxAttempts) {
+        //draw the hangman
+        if (maxAttempts - remainingAttempts == 6) {
+            System.out.println("___________________");
+            System.out.println("  |/            |");
+            System.out.println("  |            (_)");
+            System.out.println("  |             |");
+            System.out.println("  |            /|\\");
+            System.out.println("  |             |");
+            System.out.println("  |            /|\\");
+            System.out.println("  |");
+            System.out.println("__|______");
+        }
+        if (maxAttempts - remainingAttempts == 1) {
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println("_________");
+        }
+        if (maxAttempts - remainingAttempts == 2) {
+            System.out.println("___________________");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("__|______");
+        }
+        if (maxAttempts - remainingAttempts == 3) {
+            System.out.println("___________________");
+            System.out.println("  |/");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("__|______");
+        }
+        if (maxAttempts - remainingAttempts == 4) {
+            System.out.println("___________________");
+            System.out.println("  |/            |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("  |");
+            System.out.println("__|______");
+        }
+        if (maxAttempts - remainingAttempts == 5) {
+            System.out.println("___________________");
+            System.out.println("  |/            |");
+            System.out.println("  |            (_)");
+            System.out.println("  |             |");
+            System.out.println("  |            /|");
+            System.out.println("  |             |");
+            System.out.println("  |            /|");
+            System.out.println("  |");
+            System.out.println("__|______");
+        }
+    }
+
     @Override
     public void startGame() {
         if (playerName == null) {
@@ -70,29 +139,31 @@ public class Hangman implements PlayGame {
                 if (wordToGuess.indexOf(guess) == -1) {
                     remainingAttempts--;
                     System.out.println("Wrong guess!");
+                    drawHangman(remainingAttempts, maxAttempts);
                 } else {
                     System.out.println("Good guess!");
                 }
+
                 continue;
-            } else if (input.length() >1)
-            {
+            } else if (input.length() > 1) {
                 if (guessedWords.contains(input)) {
                     System.out.println("You have already guessed that word!");
                     continue;
-                };
+                }
+                ;
                 guessedWords.add(input);
-                if (input.equalsIgnoreCase(wordToGuess)){
-                    System.out.println("Totally amazing - you've guessed the word " + playerName +"!");
+                if (input.equalsIgnoreCase(wordToGuess)) {
+                    System.out.println("Totally amazing - you've guessed the word " + playerName + "!");
                     return;
-                }
-                else {
-                    remainingAttempts --;
+                } else {
+                    remainingAttempts--;
                     System.out.println("Wrong word guess!");
+                    drawHangman(remainingAttempts, maxAttempts);
                 }
-            }
-            else {
+            } else {
                 System.out.println("invalid input - try again!");
             }
+
 
             if (isWordGuessed()) {
                 System.out.println("\nYou've won Hangman " + playerName + "! You guessed the word: " + wordToGuess);

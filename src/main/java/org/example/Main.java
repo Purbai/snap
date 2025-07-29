@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -17,13 +19,20 @@ public class Main {
 //        {
 //            System.out.println(card);
 //        }
+        System.out.println("Select 1 to play Hangman, 2 to play Snap");
+        Scanner scanner = new Scanner(System.in);
+        int gameOpt = scanner.nextInt();
 
-//        Snap game = new Snap();
-//        game.setupPlayers("Joe", "Mary","Bob");
-//        game.startGame();
-        Hangman game = new Hangman();
-        game.setupPlayers("Mary");
-        game.startGame();
+        if (gameOpt == 2) {
+            Snap game = new Snap();
+            game.setupPlayers("Joe", "Mary", "Bob");
+            game.startGame();
+        }
+        if (gameOpt == 1) {
+            Hangman game = new Hangman();
+            game.setupPlayers("Mary");
+            game.startGame();
+        }
     }
 }
 

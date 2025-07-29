@@ -17,11 +17,12 @@ public class Card {
         this.symbol = symbol;
         this.value = value;
     }
-    public boolean matchesSymbol (Card otherCard){
+
+    public boolean matchesSymbol(Card otherCard) {
         return this.symbol.equals(otherCard.symbol);
     }
 
-@Override
+    @Override
     public String toString() {
         return symbol + " of " + suit + " (value: " + value + " )";
     }

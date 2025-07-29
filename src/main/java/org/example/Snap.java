@@ -14,6 +14,7 @@ public class Snap extends CardGame implements PlayGame {
         super("Snap");
         this.inputProvider = inputProvider;
     }
+
     public Snap() {
         this(() -> {
             Scanner scanner = new Scanner(System.in);
@@ -38,7 +39,7 @@ public class Snap extends CardGame implements PlayGame {
         }
     }
 
-    public  boolean playGameAgain() {
+    public boolean playGameAgain() {
         System.out.println("Play Again? y/n");
         //String playAgain = scanner.nextLine();
         String playAgain = inputProvider.getInput();
@@ -94,8 +95,7 @@ public class Snap extends CardGame implements PlayGame {
                         player.incrementScore();
                         if (playGameAgain()) {
                             resetGame();
-                        }
-                        else {
+                        } else {
                             break;
                         }
                     } else {
