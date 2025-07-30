@@ -22,27 +22,32 @@ public class Main {
         System.out.println("Select 1 to play Hangman, 2 to play Snap");
         Scanner scanner = new Scanner(System.in);
         int gameOpt = scanner.nextInt();
+        switch (gameOpt) {
+            case 1:
+                Hangman game = new Hangman();
+                scanner.nextLine();  // without this, it was not waiting for player name
+                System.out.println("Enter name of player :");
+                String hangmanPlayer = scanner.nextLine();
+                if (!hangmanPlayer.isEmpty()) game.setupPlayers(hangmanPlayer);
+                game.startGame();
+                break;
+            case 2:
+                Snap snapGame = new Snap();
+                System.out.println("Enter no of players :");
+                int noPlayers = scanner.nextInt();
+                scanner.nextLine();  // without this, it was not waiting for player 1 name
+                for (int i = 1; i <= noPlayers; i++) {
+                    System.out.println("Enter name of player" + i + " :");
+                    String snapPlayer = scanner.nextLine();
+                    if (!snapPlayer.isEmpty()) snapGame.setupPlayers(snapPlayer);
+                }
+                snapGame.startGame();
+                break;
+            default:
+                System.out.println("invalid option");
+                break;
+        }
 
-        if (gameOpt == 2) {
-            Snap game = new Snap();
-            System.out.println("Enter no of players :");
-            int noPlayers = scanner.nextInt();
-            scanner.nextLine() ;  // without this, it was not waiting for player 1 name
-            for (int i = 1 ; i <= noPlayers; i++) {
-                System.out.println("Enter name of player" + i + " :");
-                String playName = scanner.nextLine();
-                if (!playName.isEmpty()) game.setupPlayers(playName);
-            }
-            game.startGame();
-        }
-        if (gameOpt == 1) {
-            Hangman game = new Hangman();
-            scanner.nextLine() ;  // without this, it was not waiting for player name
-            System.out.println("Enter name of player :");
-            String playName = scanner.nextLine();
-            if (!playName.isEmpty()) game.setupPlayers(playName);
-            game.startGame();
-        }
     }
 }
 
