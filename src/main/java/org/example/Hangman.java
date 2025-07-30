@@ -44,21 +44,7 @@ public class Hangman implements PlayGame {
     private void drawHangman(int remainingAttempts, int maxAttempts) {
         //draw the hangman
         switch (maxAttempts - remainingAttempts) {
-            case 6:
-                System.out.println("___________________");
-                System.out.println("  |/            |");
-                System.out.println("  |            (_)");
-                System.out.println("  |            \\|/");
-                System.out.println("  |             |");
-                System.out.println("  |            / \\");
-                System.out.println("  |");
-                System.out.println("__|______");
-                break;
             case 1:
-                System.out.println(" ");
-                System.out.println(" ");
-                System.out.println(" ");
-                System.out.println(" ");
                 System.out.println(" ");
                 System.out.println(" ");
                 System.out.println("_________");
@@ -103,6 +89,16 @@ public class Hangman implements PlayGame {
                 System.out.println("  |");
                 System.out.println("__|______");
                 break;
+            case 6:
+                System.out.println("___________________");
+                System.out.println("  |/            |");
+                System.out.println("  |            (_)");
+                System.out.println("  |            \\|/");
+                System.out.println("  |             |");
+                System.out.println("  |            / \\");
+                System.out.println("  |");
+                System.out.println("__|______");
+                break;
             default:
                 break;
         }
@@ -121,7 +117,7 @@ public class Hangman implements PlayGame {
             System.out.println("Guessed letters: " + guessedLetters);
             System.out.println("Guessed words: " + guessedWords);
             System.out.println("Attempts left: " + remainingAttempts);
-            System.out.print(playerName+" - guess a letter or full word: ");
+            System.out.print(playerName + " - guess a letter or full word: ");
 
             String input = scanner.nextLine().toLowerCase();
 

@@ -5,20 +5,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-//        Snap gameSnap = new Snap();
-//        gameSnap.buildDeck();
-//        gameSnap.sortDeckInNumberOrder();
-//        System.out.println("\n Sorted Deck by Number \n");
-//        for (Card card: gameSnap.getDeck())
-//        {
-//            System.out.println(card);
-//        }
-//        gameSnap.sortDeckIntoSuits();
-//        System.out.println("\n Sorted Deck by suit \n");
-//        for (Card card: gameSnap.getDeck())
-//        {
-//            System.out.println(card);
-//        }
         System.out.println("Select 1 to play Hangman, 2 to play Snap");
         Scanner scanner = new Scanner(System.in);
         int gameOpt = scanner.nextInt();
