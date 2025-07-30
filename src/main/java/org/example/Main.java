@@ -25,12 +25,22 @@ public class Main {
 
         if (gameOpt == 2) {
             Snap game = new Snap();
-            game.setupPlayers("Joe", "Mary", "Bob");
+            System.out.println("Enter no of players :");
+            int noPlayers = scanner.nextInt();
+            scanner.nextLine() ;  // without this, it was not waiting for player 1 name
+            for (int i = 1 ; i <= noPlayers; i++) {
+                System.out.println("Enter name of player" + i + " :");
+                String playName = scanner.nextLine();
+                if (!playName.isEmpty()) game.setupPlayers(playName);
+            }
             game.startGame();
         }
         if (gameOpt == 1) {
             Hangman game = new Hangman();
-            game.setupPlayers("Mary");
+            scanner.nextLine() ;  // without this, it was not waiting for player name
+            System.out.println("Enter name of player :");
+            String playName = scanner.nextLine();
+            if (!playName.isEmpty()) game.setupPlayers(playName);
             game.startGame();
         }
     }

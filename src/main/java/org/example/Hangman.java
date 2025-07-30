@@ -43,70 +43,68 @@ public class Hangman implements PlayGame {
 
     private void drawHangman(int remainingAttempts, int maxAttempts) {
         //draw the hangman
-        if (maxAttempts - remainingAttempts == 6) {
-            System.out.println("___________________");
-            System.out.println("  |/            |");
-            System.out.println("  |            (_)");
-            System.out.println("  |             |");
-            System.out.println("  |            /|\\");
-            System.out.println("  |             |");
-            System.out.println("  |            /|\\");
-            System.out.println("  |");
-            System.out.println("__|______");
-        }
-        if (maxAttempts - remainingAttempts == 1) {
-            System.out.println(" ");
-            System.out.println(" ");
-            System.out.println(" ");
-            System.out.println(" ");
-            System.out.println(" ");
-            System.out.println(" ");
-            System.out.println(" ");
-            System.out.println("_________");
-        }
-        if (maxAttempts - remainingAttempts == 2) {
-            System.out.println("___________________");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("__|______");
-        }
-        if (maxAttempts - remainingAttempts == 3) {
-            System.out.println("___________________");
-            System.out.println("  |/");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("__|______");
-        }
-        if (maxAttempts - remainingAttempts == 4) {
-            System.out.println("___________________");
-            System.out.println("  |/            |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("  |");
-            System.out.println("__|______");
-        }
-        if (maxAttempts - remainingAttempts == 5) {
-            System.out.println("___________________");
-            System.out.println("  |/            |");
-            System.out.println("  |            (_)");
-            System.out.println("  |             |");
-            System.out.println("  |            /|");
-            System.out.println("  |             |");
-            System.out.println("  |            /|");
-            System.out.println("  |");
-            System.out.println("__|______");
+        switch (maxAttempts - remainingAttempts) {
+            case 6:
+                System.out.println("___________________");
+                System.out.println("  |/            |");
+                System.out.println("  |            (_)");
+                System.out.println("  |            \\|/");
+                System.out.println("  |             |");
+                System.out.println("  |            / \\");
+                System.out.println("  |");
+                System.out.println("__|______");
+                break;
+            case 1:
+                System.out.println(" ");
+                System.out.println(" ");
+                System.out.println(" ");
+                System.out.println(" ");
+                System.out.println(" ");
+                System.out.println(" ");
+                System.out.println("_________");
+                break;
+            case 2:
+                System.out.println("___________________");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("__|______");
+                break;
+            case 3:
+                System.out.println("___________________");
+                System.out.println("  |/");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("__|______");
+                break;
+            case 4:
+                System.out.println("___________________");
+                System.out.println("  |/            |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("  |");
+                System.out.println("__|______");
+                break;
+            case 5:
+                System.out.println("___________________");
+                System.out.println("  |/            |");
+                System.out.println("  |            (_)");
+                System.out.println("  |            \\|");
+                System.out.println("  |             |");
+                System.out.println("  |            /|");
+                System.out.println("  |");
+                System.out.println("__|______");
+                break;
+            default:
+                break;
         }
     }
 
@@ -123,7 +121,7 @@ public class Hangman implements PlayGame {
             System.out.println("Guessed letters: " + guessedLetters);
             System.out.println("Guessed words: " + guessedWords);
             System.out.println("Attempts left: " + remainingAttempts);
-            System.out.print("Guess a letter or full word: ");
+            System.out.print(playerName+" - guess a letter or full word: ");
 
             String input = scanner.nextLine().toLowerCase();
 
